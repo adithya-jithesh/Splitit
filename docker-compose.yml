@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:15
+    container_name: splitit_db
+    environment:
+      POSTGRES_USER: adith_admin
+      POSTGRES_PASSWORD: splitit_password
+      POSTGRES_DB: splitit_ledger
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
