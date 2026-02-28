@@ -1,9 +1,11 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
+from decimal import Decimal
+
 from src.database import SessionLocal
 from src.models import LoanDB
 
-app = FastAPI(title = "SplitIt BPNL API")
+app = FastAPI(title="SplitIt BNPL API")
 
 def get_db():
     db = SessionLocal()
@@ -14,9 +16,8 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return{"message": "Welcome to SplitIt API - Your Ledger is Online"}
+    return {"message": "Welcome to SplitIt API"}
 
 @app.get("/loans")
 def list_loans(db: Session = Depends(get_db)):
-    loans = db.query(LoanDB).all()
-    return loans
+    return db.query(LoanDB).all()
