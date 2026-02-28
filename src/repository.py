@@ -1,25 +1,18 @@
 from sqlalchemy.orm import Session
-from src.models import LoanDB, InstallmentDB
+from src.models import LoanDB
+from decimal import Decimal
 
-def save_loan_to_db(db: Session, loan_data):
-
+def save_loan_to_db(db: Session, amount: Decimal, installments: int):
+    # 1. Create the main Loan record
     new_loan = LoanDB(
-        loan_id=loan_data['loan_id'],
-        total_amount=loan_data['total_amount'],
-        num_installments=len(loan_data['installments']),
+        total_amount=amount,
+        num_installments=installments,
+        status="PENDING"
     )
-
+    
     db.add(new_loan)
-
-    for inst in loan_data['installments']:
-        new_inst = InstallmentDB(
-            loan_id=new_loan.loan_id,
-            amount=inst['amount'],
-            due_date=inst['due_date'],
-        )
-
-        db.add(new_inst)
-
-        db.commit()
-
+    db.commit()  # Save to get the ID
+    db.refresh(new_loan) # Pull the ID back from the DB
+    
     print(f"Loan {new_loan.loan_id} successfully carved into the database!")
+    return new_loan
